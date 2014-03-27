@@ -28,36 +28,53 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="javascript-page-performance---10-ways-we-made-slideshare-faster" class="anchor" href="#javascript-page-performance---10-ways-we-made-slideshare-faster"><span class="octicon octicon-link"></span></a>Javascript page performance - 10 ways we made SlideShare faster</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h2>
+<a name="1-load-all-third-party-libraries-after-windowload" class="anchor" href="#1-load-all-third-party-libraries-after-windowload"><span class="octicon octicon-link"></span></a>1. Load all third party libraries after window.load</h2>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>To start with, all the javascript required for social sharing widgets eg. Facebook like button should be loaded asynchronously. 
+As a second step, move the script tags from the html page to a JavaScript(JS) file and bind the asynchronous loading of the external JS libraries to window.loadevent. 
+For example, to load FB Like Button, place the following code in the JS file included in the head</p>
+
+<pre><code>$(window).load(function(){
+(function(d){
+var js, id = 'facebook-jssdk',
+ref = d.getElementsByTagName('script')[0];
+if (d.getElementById(id)) {return;}
+js = d.createElement('script'); js.id = id; js.async = true;
+js.src = "//connect.facebook.net/en_US/all.js";
+ref.parentNode.insertBefore(js, ref);
+}(document));
+}
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h2>
+<a name="2-asynchronously-load-jquery" class="anchor" href="#2-asynchronously-load-jquery"><span class="octicon octicon-link"></span></a>2. Asynchronously Load Jquery</h2>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h2>
+<a name="3-combine-and-compress" class="anchor" href="#3-combine-and-compress"><span class="octicon octicon-link"></span></a>3. Combine and Compress</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<h2>
+<a name="4-smarter-js-packaging" class="anchor" href="#4-smarter-js-packaging"><span class="octicon octicon-link"></span></a>4. Smarter JS packaging</h2>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<h2>
+<a name="5-defer-loading-of-js" class="anchor" href="#5-defer-loading-of-js"><span class="octicon octicon-link"></span></a>5. Defer loading of JS</h2>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h2>
+<a name="6-lazy-load-html-and-js" class="anchor" href="#6-lazy-load-html-and-js"><span class="octicon octicon-link"></span></a>6. Lazy Load HTML and JS</h2>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<h2>
+<a name="7-use-of-cache-busters" class="anchor" href="#7-use-of-cache-busters"><span class="octicon octicon-link"></span></a>7. Use of Cache Busters</h2>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<h2>
+<a name="8-remove-https-calls-from-an-http-page" class="anchor" href="#8-remove-https-calls-from-an-http-page"><span class="octicon octicon-link"></span></a>8. Remove HTTPS calls from an http page</h2>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<h2>
+<a name="9-dns-prefetching" class="anchor" href="#9-dns-prefetching"><span class="octicon octicon-link"></span></a>9. DNS prefetching</h2>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<h2>
+<a name="10-redesigning-html5-player" class="anchor" href="#10-redesigning-html5-player"><span class="octicon octicon-link"></span></a>10. Redesigning HTML5 player</h2>
       </section>
     </div>
 
