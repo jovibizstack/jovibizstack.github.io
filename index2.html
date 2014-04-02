@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>engineering notes by jovibizstack</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">engineering notes</h1>
+        <p class="header">agora</p>
+
+
+
+        <ul>
+          <li><a class="buttons github" href="https://github.com/jovibizstack">GitHub Profile</a></li>
+        </ul>
+
+      </header>
+      <section>
+        <h3>
+<a name="javascript-page-performance-tips-from-slideshare" class="anchor" href="#javascript-page-performance-tips-from-slideshare"><span class="octicon octicon-link"></span></a><a href="http://engineering.slideshare.net/2013/10/10-ways-we-made-slideshare-faster/">Javascript page performance tips from Slideshare</a>
+</h3>
+
+<h2>
+<a name="1-load-all-third-party-libraries-after-windowload" class="anchor" href="#1-load-all-third-party-libraries-after-windowload"><span class="octicon octicon-link"></span></a>1. Load all third party libraries after window.load</h2>
+
+<p>To start with, all the javascript required for social sharing widgets eg. Facebook like button should be loaded asynchronously. 
+As a second step, move the script tags from the html page to a JavaScript(JS) file and bind the asynchronous loading of the external JS libraries to window.loadevent. 
+For example, to load FB Like Button, place the following code in the JS file included in the head</p>
+
+<pre><code>$(window).load(function(){
+  (function(d){
+    var js, id = 'facebook-jssdk',
+    ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement('script'); 
+    js.id = id; 
+    js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    ref.parentNode.insertBefore(js, ref);
+  }(document));
+}
+</code></pre>
+
+<h2>
+<a name="2-asynchronously-load-jquery" class="anchor" href="#2-asynchronously-load-jquery"><span class="octicon octicon-link"></span></a>2. Asynchronously Load Jquery</h2>
+
+<p>Another useful trick is to load jQuery asynchronously so that other components on the page are not blocked. We used jql plugin which can be inlined in the HTML page. You don’t have to worry about missing document.ready( ) calls since jQl automatically catches all jQuery().ready() calls and executes them as soon as jQuery is loaded and the DOM is ready.</p>
+
+<h2>
+<a name="3-combine-and-compress" class="anchor" href="#3-combine-and-compress"><span class="octicon octicon-link"></span></a>3. Combine and Compress</h2>
+
+<p>Combining the JS files help in eliminating the initial DNS lookup and TCP connection components that goes in every request. This is very evident from Yslow requests but an interesting tweak to this will be conditional compiling. For example let’s say your page requires jquery, file1.js, logged_in.js, logged_out.js.</p>
+
+<p>Conditional compiling should give you </p>
+
+<pre><code>combined_logged_in.js[jquery+file1.js+logged_in.js] and combined_logged_out.js[jquery+file1.js+logged_out.js]
+</code></pre>
+
+<p>For compressing JS , closure compiler is known to give the best results.</p>
+
+<h2>
+<a name="4-smarter-js-packaging" class="anchor" href="#4-smarter-js-packaging"><span class="octicon octicon-link"></span></a>4. Smarter JS packaging</h2>
+
+<p>SlideShare has different functionality for logged in and logged out users. We load only base files for logged out users and additional JS files when the user logs in. Similarly, the HTML5 player loads different type of combined JS files depending on the content type say presentations or documents. There is also a possibility that some plugins that you added initially are not being used anymore. Removing them is the first step towards minimizing size of assets that block page load.</p>
+
+<h2>
+<a name="5-defer-loading-of-js" class="anchor" href="#5-defer-loading-of-js"><span class="octicon octicon-link"></span></a>5. Defer loading of JS</h2>
+
+<p>The main component of SlideShare which is the HTML5 player needs to be loaded as fast as possible. For this we are dependent on document.ready event. Therefore,the JS that is required for above the fold functionality is minimal and is loaded quite early. The other JS that is required for additional user functionality is loaded after window.load.</p>
+
+<h2>
+<a name="6-lazy-load-html-and-js" class="anchor" href="#6-lazy-load-html-and-js"><span class="octicon octicon-link"></span></a>6. Lazy Load HTML and JS</h2>
+
+<p>This is a commonly used technique to show user generated content on page like comments etc only when the user interacts. We removed the inline html required for user actions like embed code and retrieved it on user click. This reduces the page size that the browser needs to parse and speeds up the load time.</p>
+
+<h2>
+<a name="7-use-of-cache-busters" class="anchor" href="#7-use-of-cache-busters"><span class="octicon octicon-link"></span></a>7. Use of Cache Busters</h2>
+
+<p>All the assets like images, sprites, javascript files should have a cachebuster appended at the end of the URL so that the browser can cache the assets and makes a new request only if cache buster has changed.</p>
+
+<h2>
+<a name="8-remove-https-calls-from-an-http-page" class="anchor" href="#8-remove-https-calls-from-an-http-page"><span class="octicon octicon-link"></span></a>8. Remove HTTPS calls from an http page</h2>
+
+<p>This can help you chop off a few milliseconds spent in SSL negotiation.</p>
+
+<h2>
+<a name="9-dns-prefetching" class="anchor" href="#9-dns-prefetching"><span class="octicon octicon-link"></span></a>9. DNS prefetching</h2>
+
+<p>SlideShare uses multiple cdns to fetch various assets. We figured out that we can reduce DNS look up time by preresolving DNS in the browser.</p>
+
+<h2>
+<a name="10-redesigning-html5-player" class="anchor" href="#10-redesigning-html5-player"><span class="octicon octicon-link"></span></a>10. Redesigning HTML5 player</h2>
+
+<p>Apart from these we also made certain improvements in our HTML5 player. The core of the SlideShare – HTML5 player is written in JavaScript using jQuery. The HTML5 player is a complex system which supports displaying presentations,documents , slidecasts and now Infographics too! To make a dent in the page load time by a good margin, we realized that we need to redesign the HTML5 player:</p>
+
+<ul>
+<li><p>We started with the idea that the player should be able to display content even if JavaScript is disabled in the browser and JS should only be used to make the player alive.</p></li>
+<li><p>All the markup was generated on the client side using javascript which led to a lot of DOM manipulation. This was resolved by moving markup creation logic to backend.</p></li>
+<li><p>The layout of slides and other styling logic was rewritten so that CSS rules can be used effectively instead of relying on JS</p></li>
+<li><p>To make the user experience delightful, we included the first slide in the markup itself so that it is triggered by the browser parser instead of waiting on JS.</p></li>
+</ul><p>(Apoorvi Kapoor)</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
